@@ -25,6 +25,7 @@ public class SecurityConfig {
                                 "/api/bookings/**",
                                 "/api/users/delete/**",
                                 "/api/venues",
+                                "/api/venues/**",
                                 "/auth/**",
                                 "/code**/",
                                 "/public/**"

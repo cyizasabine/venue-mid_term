@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venue Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .venue-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .venues-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .venue-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .venue-item:last-child {
+            border-bottom: none;
+        }
+
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Venue Management System</h1>
+        
+        <div class="venue-form">
+            <h2>Add New Venue</h2>
+            <form id="venueForm">
+                <div class="form-group">
+                    <label for="name">Venue Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="capacity">Capacity:</label>
+                    <input type="number" id="capacity" name="capacity" required>
+                </div>
+                <button type="submit">Add Venue</button>
+            </form>
+            <div id="message"></div>
+        </div>
+
+        <div class="venues-list">
+            <h2>Venues List</h2>
+            <div id="venuesList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api/venues';
+
+        // Function to fetch all venues
+        async function fetchVenues() {
+            try {
+                const response = await fetch(API_BASE_URL);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch venues');
+                }
+                const venues = await response.json();
+                displayVenues(venues);
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        // Function to display venues
+        function displayVenues(venues) {
+            const venuesList = document.getElementById('venuesList');
+            venuesList.innerHTML = '';
+            
+            venues.forEach(venue => {
+                const venueElement = document.createElement('div');
+                venueElement.className = 'venue-item';
+                venueElement.innerHTML = `
+                    <div>
+                        <h3>${venue.name}</h3>
+                        <p>Location: ${venue.location}</p>
+                        <p>Capacity: ${venue.capacity}</p>
+                    </div>
+                    <button onclick="getVenueDetails(${venue.id})">View Details</button>
+                `;
+                venuesList.appendChild(venueElement);
+            });
+        }
+
+        // Function to create a new venue
+        async function createVenue(venueData) {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(venueData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to create venue');
+                }
+
+                const venue = await response.json();
+                showMessage('Venue created successfully!', false);
+                fetchVenues();
+                return venue;
+            } catch (error) {
+                showMessage(error.message, true);
+                throw error;
+            }
+        }
+
+        // Function to get venue details
+        async function getVenueDetails(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch venue details');
+                }
+                const venue = await response.json();
+                alert(`
+                    Venue Details:
+                    ID: ${venue.id}
+                    Name: ${venue.name}
+                    Location: ${venue.location}
+                    Capacity: ${venue.capacity}
+                `);
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        // Function to show messages
+        function showMessage(message, isError) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.className = isError ? 'error-message' : 'success-message';
+            setTimeout(() => {
+                messageElement.textContent = '';
+                messageElement.className = '';
+            }, 3000);
+        }
+
+        // Form submission handler
+        document.getElementById('venueForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const venueData = {
+                name: document.getElementById('name').value,
+                location: document.getElementById('location').value,
+                capacity: parseInt(document.getElementById('capacity').value)
+            };
+
+            try {
+                await createVenue(venueData);
+                e.target.reset();
+            } catch (error) {
+                console.error('Error creating venue:', error);
+            }
+        });
+
+        // Load venues when page loads
+        document.addEventListener('DOMContentLoaded', fetchVenues);
+    </script>
+</body>
+</html>

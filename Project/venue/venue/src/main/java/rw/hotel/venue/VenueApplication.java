@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"rw.hotel.venue.model"})
+
 @EnableJpaRepositories(basePackages = {"rw.hotel.venue.repository"})
 public class VenueApplication {
 
