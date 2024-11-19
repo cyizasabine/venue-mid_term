@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Venue Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2d2e2e;
+            padding: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .venue-form, .venues-list {
+            background: wheat;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .venue-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #message {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .error-message { color: red; }
+        .success-message { color: green; }
+    </style>
+</head>
+<body>
+    <div class="venue-form">
+        <h2>Add Venue</h2>
+        <form id="venueForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Venue Name" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="location" placeholder="Location" required>
+            </div>
+            <div class="form-group">
+                <input type="number" id="capacity" placeholder="Capacity" required>
+            </div>
+            <button type="submit">Add Venue</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <div class="venues-list">
+        <h2>Venues</h2>
+        <div id="venuesList"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api/venues';
+
+        async function fetchVenues() {
+            try {
+                const response = await fetch(API_BASE_URL);
+                const venues = await response.json();
+                displayVenues(venues);
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        function displayVenues(venues) {
+            const venuesList = document.getElementById('venuesList');
+            venuesList.innerHTML = venues.map(venue => `
+                <div class="venue-item">
+                    <div>
+                        <strong>${venue.name}</strong>
+                        <p>${venue.location} (${venue.capacity})</p>
+                    </div>
+                    <button onclick="getVenueDetails(${venue.id})">Details</button>
+                </div>
+            `).join('');
+        }
+
+        async function createVenue(venueData) {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(venueData)
+                });
+                
+                if (!response.ok) throw new Error('Create failed');
+                showMessage('Venue added!', false);
+                fetchVenues();
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        async function getVenueDetails(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`);
+                const venue = await response.json();
+                alert(`${venue.name}\nLocation: ${venue.location}\nCapacity: ${venue.capacity}`);
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        function showMessage(message, isError) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.className = isError ? 'error-message' : 'success-message';
+            setTimeout(() => messageElement.textContent = '', 3000);
+        }
+
+        document.getElementById('venueForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const venueData = {
+                name: document.getElementById('name').value,
+                location: document.getElementById('location').value,
+                capacity: parseInt(document.getElementById('capacity').value)
+            };
+            await createVenue(venueData);
+            e.target.reset();
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchVenues);
+    </script>
+</body>
+</html>

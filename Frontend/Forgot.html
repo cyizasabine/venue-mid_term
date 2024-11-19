@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venue Management System - Forgot Password</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2d2e2e, #2a2a2b, #2d2e2e);
+      margin: 0;
+    }
+    .reset-container {
+      background: wheat;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+    }
+    .reset-container h2 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: #3e423e;
+      font-weight: 700;
+    }
+    .reset-container input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .reset-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #505850;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .reset-container button:hover {
+      background-color: #404848;
+    }
+    .reset-container button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .message.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    .message.error {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    .login-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #505850;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .login-link:hover {
+      color: #404848;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="reset-container">
+    <h2>Forgot Password</h2>
+    <form id="reset-form" onsubmit="submitReset(event)">
+      <input type="email" name="email" placeholder="Enter your email" required>
+      <button type="submit" id="submit-button">
+        <span id="spinner" class="spinner" style="display: none;"></span>
+        <span id="button-text">Send Reset Link</span>
+      </button>
+    </form>
+    <div id="message" class="message" style="display: none;"></div>
+    <a href="./login form.html" class="login-link">Back to Login</a>
+  </div>
+
+  <script>
+    async function submitReset(event) {
+      event.preventDefault();
+      
+      const form = document.getElementById('reset-form');
+      const button = document.getElementById('submit-button');
+      const spinner = document.getElementById('spinner');
+      const buttonText = document.getElementById('button-text');
+      const messageDiv = document.getElementById('message');
+      
+      // Disable form and show loading state
+      button.disabled = true;
+      spinner.style.display = 'inline-block';
+      buttonText.textContent = 'Sending...';
+      messageDiv.style.display = 'none';
+
+      const formData = { email: form.email.value };
+
+      try {
+        const response = await fetch('http://localhost:8081/auth/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const responseText = await response.text();
+        let message;
+        
+        try {
+          // Try to parse as JSON
+          message = JSON.parse(responseText).message;
+        } catch (e) {
+          // If not JSON, use the text directly
+          message = responseText;
+        }
+
+        messageDiv.style.display = 'block';
+        
+        if (response.ok) {
+          messageDiv.className = 'message success';
+          messageDiv.textContent = message || 'Password reset link sent to your email!';
+          form.reset(); // Clear the form
+        } else {
+          messageDiv.className = 'message error';
+          messageDiv.textContent = message || 'Failed to send reset link. Please try again.';
+        }
+      } catch (error) {
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Error: Unable to connect to the server. Please try again later.';
+      } finally {
+        // Reset button state
+        button.disabled = false;
+        spinner.style.display = 'none';
+        buttonText.textContent = 'Send Reset Link';
+      }
+    }
+  </script>
+</body>
+</html>

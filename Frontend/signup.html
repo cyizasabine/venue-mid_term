@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venue Management System - Sign Up</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2d2e2e, #2a2a2b, #2d2e2e);
+      margin: 0;
+    }
+    .signup-container {
+      background: wheat;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+    }
+    .signup-container h2 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: #333;
+      font-weight: 700;
+    }
+    .signup-container input[type="text"],
+    .signup-container input[type="email"],
+    .signup-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .signup-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #505850;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .signup-container button:hover {
+      background-color: #404848;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .login-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #505850;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .login-link:hover {
+      color: #404848;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Venue Management Sign Up</h2>
+    <form id="signup-form" onsubmit="submitForm(event)">
+      <input type="text" name="username" placeholder="username" required aria-label="username">
+      <input type="email" name="email" placeholder="Email" required aria-label="Email">
+      <input type="password" name="password" placeholder="Password" required aria-label="Password">
+      <button type="submit">Sign Up</button>
+    </form>
+    <div id="message" class="message"></div>
+    <a href="./loginform.html" class="login-link">Already have an account? Log in here</a>
+  </div>
+
+  <script>
+    async function submitForm(event) {
+      event.preventDefault(); // Prevent default form submission
+      const form = document.getElementById('signup-form');
+      const formData = {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value
+      };
+      
+      try {
+        const response = await fetch('http://localhost:8080/api/users/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const messageDiv = document.getElementById('message');
+        if (response.ok) {
+          messageDiv.style.color = 'green';
+          messageDiv.textContent = 'Sign up successful!';
+        } else {
+          const errorData = await response.json();
+          messageDiv.style.color = 'red';
+          messageDiv.textContent = errorData.message || 'Sign up failed!';
+        }
+      } catch (error) {
+        document.getElementById('message').textContent = 'Error: Unable to connect to the server.';
+      }
+    }
+  </script>
+</body>
+</html>
