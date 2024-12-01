@@ -1,0 +1,79 @@
+.login-container {
+  background: wheat;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  width: 350px;
+  text-align: center;
+  margin: auto 600px;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  font-size: 26px;
+  color: #333;
+  font-weight: 700;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10px;
+  /* Adjusted margin for spacing */
+}
+
+.login-container label {
+  font-size: 14px;
+  color: #505850;
+  margin-left: 8px;
+  /* Space between checkbox and label */
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #505850;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  /* Space above the button */
+}
+
+.login-container button:hover {
+  background-color: #333;
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.signup-link,
+.forgot-password-link {
+  display: block;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #505850;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link:hover,
+.forgot-password-link:hover {
+  color: #333;
+}

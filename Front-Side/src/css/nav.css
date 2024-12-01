@@ -1,0 +1,138 @@
+
+.navbar {
+    background-color: #ffffff;
+    padding: 1rem 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.logo span {
+    color: #3498db;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #3498db;
+}
+
+.nav-button {
+    background-color: #3498db;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #2980b9;
+}
+
+/* Login and Signup button styles */
+.auth-button {
+    background-color: transparent;
+    border: 2px solid #3498db;
+    color: #3498db;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Updated Hero Section */
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://media-api.xogrp.com/images/2c80fca0-cd62-4404-8bab-7152674314c1~rs_768.h') center/cover no-repeat;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    color: white;
+    margin-top: 60px;
+    position: relative;
+}
+
+.hero-content {
+    width: 50%;
+    padding-right: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hero .nav-button {
+    font-size: 1.1rem;
+    padding: 0.8rem 2rem;
+    background-color: #3498db;
+    border: 2px solid #3498db;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.hero .nav-button:hover {
+    background-color: transparent;
+    color: white;
+    border-color: white;
+}
+
+/* Remove hero-image section as we're using background image instead */
+.hero-image {
+    display: none;
+}
+
+/* Rest of the styles remain the same */
+/* ... (rest of your existing CSS) ... */
+
+@media (max-width: 768px) {
+    .hero-content {
+        width: 100%;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+    }
+}
